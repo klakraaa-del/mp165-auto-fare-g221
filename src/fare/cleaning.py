@@ -1,0 +1,39 @@
+import pandas as pd
+import yaml
+
+
+def load_params(path="params.yaml"):
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
+def clean_booking(s, booking_map):
+    # TODO: strip spaces, lowercase, remove trailing ".", then map abbreviations
+    return s
+
+
+def fix_units(df, p):
+    # TODO: rows where zone == Station Area: divide wait_min by 60
+    return df
+
+
+def drop_typos(df, target, multiplier):
+    # TODO: drop rows where target > multiplier * median of target
+    return df
+
+
+def drop_stuck(df, p):
+    # TODO: drop rows with date between stuck_start and stuck_end
+    return df
+
+
+def clean_train(df, p):
+    df = df.copy()
+    # TODO: call the functions above in a sensible order
+    # TODO: drop the leaking column fare_paid_receipt_rs
+    return df
+
+
+def clean_features(df, p):
+    # TODO: fix booking spelling only; must be safe on already-clean data
+    return df
