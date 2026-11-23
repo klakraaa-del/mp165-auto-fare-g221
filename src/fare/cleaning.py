@@ -12,10 +12,10 @@ def clean_booking(s, booking_map):
     return s.replace(booking_map)
 
 def fix_units(df, p):
-    # TODO: rows where zone == Station Area: divide wait_min by 60
+    c = p["cleaning"]
+    mask = df[c["unit_group_column"]] == c["unit_group_value"]
+    df.loc[mask, c["unit_column"]] = df.loc[mask, c["unit_column"]] / c["unit_factor"]
     return df
-
-
 def drop_typos(df, target, multiplier):
     # TODO: drop rows where target > multiplier * median of target
     return df
