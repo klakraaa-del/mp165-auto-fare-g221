@@ -20,17 +20,27 @@ def drop_typos(df, target, multiplier):
     limit = multiplier * df[target].median()
     return df[df[target] <= limit]
 def drop_stuck(df, p):
-    # TODO: drop rows with date between stuck_start and stuck_end
-    return df
+    c = p["cleaning"]
+    if not c["drop_stuck_rows"]:
+        return df
+    start = pd.Timestamp(c["stuck_start"])
+    end = pd.Timestamp(c["stuck_end"])
+    inside = df["date"].between(start, end)
+    return df[~inside]
 
 
 def clean_train(df, p):
+    c = p["cleaning"]
     df = df.copy()
-    # TODO: call the functions above in a sensible order
-    # TODO: drop the leaking column fare_paid_receipt_rs
-    return df
+    df = fix_units(df, p)
+    df["booking"] = clean_booking(df["booking"], c["booking_map"])
+    df = drop_typos(df, p["features"]["target"], c["typo_multiplier"])
+    df = drop_stuck(df, p)
+    df = df.drop(columns=["fare_paid_receipt_rs"])
+    return df.reset_index(drop=True)
 
 
 def clean_features(df, p):
-    # TODO: fix booking spelling only; must be safe on already-clean data
+    df = df.copy()
+    df["booking"] = clean_booking(df["booking"], p["cleaning"]["booking_map"])
     return df
