@@ -8,9 +8,8 @@ def load_params(path="params.yaml"):
 
 
 def clean_booking(s, booking_map):
-    # TODO: strip spaces, lowercase, remove trailing ".", then map abbreviations
-    return s
-
+    s = s.str.strip().str.lower().str.rstrip(".")
+    return s.replace(booking_map)
 
 def fix_units(df, p):
     # TODO: rows where zone == Station Area: divide wait_min by 60
