@@ -17,10 +17,8 @@ def fix_units(df, p):
     df.loc[mask, c["unit_column"]] = df.loc[mask, c["unit_column"]] / c["unit_factor"]
     return df
 def drop_typos(df, target, multiplier):
-    # TODO: drop rows where target > multiplier * median of target
-    return df
-
-
+    limit = multiplier * df[target].median()
+    return df[df[target] <= limit]
 def drop_stuck(df, p):
     # TODO: drop rows with date between stuck_start and stuck_end
     return df
