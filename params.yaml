@@ -4,15 +4,20 @@ data:
   holdout_path: data/raw/holdout_features.csv
 cleaning:
   typo_multiplier: 3
+  typo_correction_factor: 10
+
   unit_group_column: zone
   unit_group_value: Station Area
   unit_column: wait_min
   unit_factor: 60
+
   booking_map:
     str: street
     sta: stand
+
   drop_stuck_rows: true
   stuck_column: luggage_bags
+  stuck_value: 0
   stuck_start: "2026-04-10"
   stuck_end: "2026-04-29"
 features:
