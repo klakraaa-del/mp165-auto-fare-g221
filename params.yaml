@@ -1,0 +1,28 @@
+data:
+  train_path: data/raw/train.csv
+  later_path: data/raw/later.csv
+  holdout_path: data/raw/holdout_features.csv
+cleaning:
+  typo_multiplier: 3
+  unit_group_column: zone
+  unit_group_value: Station Area
+  unit_column: wait_min
+  unit_factor: 60
+  booking_map:
+    str: street
+    sta: stand
+  drop_stuck_rows: true
+  stuck_column: luggage_bags
+  stuck_start: "2026-04-10"
+  stuck_end: "2026-04-29"
+features:
+  numeric: [distance_km, wait_min, passengers, hour, luggage_bags, fuel_price_rs]
+  categorical: [booking, zone]
+  target: fare_rs
+model:
+  random_state: 42
+  test_size: 0.2
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: mp165-auto-fare
+  model_name: mp165-fare-model
