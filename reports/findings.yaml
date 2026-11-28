@@ -1,18 +1,13 @@
-# MP165 findings --- fill in every value, keep every key.
-# The marking tool reads this file. Write null only where the comment says so.
-# Use the exact column names and group values from your data files.
-
-group_id: "G221"
-problem_id: "MP165"
-
+group_id: G221
+problem_id: MP165
 data_issues:
   leaking_column:
     present: true
-    column: "fare_paid_receipt_rs"
+    column: fare_paid_receipt_rs
   unit_mixup:
     present: true
-    column: "wait_min"
-    group_value: "Station Area"
+    column: wait_min
+    group_value: Station Area
     factor: 60
   sentinel_value:
     present: false
@@ -24,37 +19,35 @@ data_issues:
     count: null
   stuck_sensor:
     present: true
-    column: "luggage_bags"
-    start_date: "2026-04-10"
-    end_date: "2026-04-29"
+    column: luggage_bags
+    start_date: '2026-04-10'
+    end_date: '2026-04-29'
   target_typos:
     present: true
     count: 14
   spelling_variants:
     present: true
-    column: "booking"
+    column: booking
     true_levels: 3
-
 tracking:
-  experiment_name: null
-  best_run_id: null
-  registered_model_name: null
-  champion_version: null
-
+  experiment_name: mp165-auto-fare
+  best_run_id: 85651ad281a64af7ae95849370f840b9
+  registered_model_name: mp165-fare-model
+  champion_version: 2
 monitoring:
   psi:
-    distance_km: null
-    wait_min: null
-    passengers: null
-    hour: null
-    luggage_bags: null
-    fuel_price_rs: null
-  most_drifted_feature: null
+    distance_km: 0.027617726207866983
+    wait_min: 0.10442919317503745
+    passengers: 0.006791572405142977
+    hour: 0.050169269295727875
+    luggage_bags: 0.0036843346802060734
+    fuel_price_rs: 5.736505766926497
+  most_drifted_feature: fuel_price_rs
   mae_by_group:
-    'Station Area': null
-    'Market': null
-    'Outskirts': null
-  worst_served_group: null
-  mae_v1_on_check: null
-  mae_v2_on_check: null
-  decision: null
+    Market: 141.44533664589918
+    Outskirts: 20.212162712468093
+    Station Area: 21.737203397513213
+  worst_served_group: Market
+  mae_v1_on_check: 57.609562933986325
+  mae_v2_on_check: 37.515390498149245
+  decision: promoted_v2

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mp165-api
-          image: mp165-api:1.0
+          image: mp165-fare:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
