@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: mp165-ci-\${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
