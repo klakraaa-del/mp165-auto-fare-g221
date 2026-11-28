@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mp165-api-config
+  labels:
+    app: mp165-api
+data:
+  PORT: "8000"
+  LOG_LEVEL: "INFO"
+  ENVIRONMENT: "production"
+  SERVICE_NAME: "mp165-auto-fare"
