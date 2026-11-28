@@ -161,13 +161,29 @@ class FareRequest(BaseModel):
     )
 
 
+# Batch prediction request and response schemas
+class BatchFareRequest(BaseModel):
+    rides: list[FareRequest] = Field(
+        ...,
+        min_length=1,
+        max_length=500,
+        description="List of trip records for batch fare estimation (1 to 500 records)"
+    )
+
+
+class BatchFareResponse(BaseModel):
+    predictions: list[float] = Field(..., description="Predicted fares in INR corresponding to input rides")
+    count: int = Field(..., description="Total number of evaluated rides")
+    total_estimated_fare_rs: float = Field(..., description="Sum of all predicted fares in the batch")
+
+
 # Health check
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
 
-# Fare prediction
+# Single fare prediction
 @app.post("/predict")
 def predict_fare(request: FareRequest):
 
@@ -179,4 +195,24 @@ def predict_fare(request: FareRequest):
 
     return {
         "predicted_fare_rs": round(float(prediction), 2)
-    }
+    }
+
+
+# High-throughput batch fare prediction
+@app.post("/predict/batch", response_model=BatchFareResponse)
+def predict_fare_batch(batch_request: BatchFareRequest):
+    input_records = [ride.model_dump(mode="json") for ride in batch_request.rides]
+    input_df = pd.DataFrame(input_records)
+
+    raw_predictions = model.predict(input_df)
+    predictions = [round(float(p), 2) for p in raw_predictions]
+    total_fare = round(float(sum(predictions)), 2)
+
+    logger.info(f"Batch prediction completed: {len(predictions)} rides processed, total fare: Rs {total_fare:.2f}")
+
+    return {
+        "predictions": predictions,
+        "count": len(predictions),
+        "total_estimated_fare_rs": total_fare
+    }
+
