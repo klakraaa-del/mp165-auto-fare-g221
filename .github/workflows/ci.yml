@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 concurrency:
-  group: mp165-ci-\${{ github.ref }}
+  group: mp165-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
