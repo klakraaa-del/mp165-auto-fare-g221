@@ -5,7 +5,6 @@ Run from the repository root:
 """
 from __future__ import annotations
 
-import copy
 from pathlib import Path
 
 import mlflow
@@ -56,7 +55,6 @@ def main() -> None:
 
     train_raw = pd.read_csv(ROOT / data["train_path"], parse_dates=["date"])
     later_raw = pd.read_csv(ROOT / data["later_path"], parse_dates=["date"])
-    holdout_raw = pd.read_csv(ROOT / data["holdout_path"])
 
     train = clean_train(train_raw, params)
     later = clean_features(later_raw, params)
@@ -137,7 +135,7 @@ def main() -> None:
         "experiment_name": params["mlflow"]["experiment_name"],
         "best_run_id": best_run.info.run_id,
         "registered_model_name": model_name,
-        "champion_version": str(registered.version if promote else 1),
+        "champion_version": registered.version if promote else 1,
     }
     findings["monitoring"] = {
         "psi": {key: (float(value) if np.isfinite(value) else None) for key, value in psi.items()},
