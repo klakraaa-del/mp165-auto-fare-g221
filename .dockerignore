@@ -1,0 +1,11 @@
+.git
+.dvc/cache
+.venv
+.venv_audio
+__pycache__
+.pytest_cache
+*.pyc
+.env
+mlruns/
+mlartifacts/
+mlflow.db
