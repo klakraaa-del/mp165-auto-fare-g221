@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mp165-api
+  labels:
+    app: mp165-api
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: mp165-api
+  template:
+    metadata:
+      labels:
+        app: mp165-api
+    spec:
+      containers:
+        - name: mp165-api
+          image: mp165-api:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
