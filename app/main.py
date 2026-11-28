@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 import time
+from enum import Enum
 from pathlib import Path
 
 import joblib
@@ -32,6 +33,19 @@ if not logger.handlers:
 # Load the champion model
 MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "model.joblib"
 model = joblib.load(MODEL_PATH)
+
+
+# Allowed categorical values
+class BookingChannel(str, Enum):
+    street = "street"
+    stand = "stand"
+    app = "app"
+
+
+class AutoZone(str, Enum):
+    station_area = "Station Area"
+    market = "Market"
+    outskirts = "Outskirts"
 
 
 # Create FastAPI application
@@ -91,16 +105,60 @@ def model_info():
     }
 
 
-# Request schema
+# Request schema with strict boundary and enum validation
 class FareRequest(BaseModel):
-    distance_km: float = Field(ge=0)
-    wait_min: float
-    passengers: int
-    hour: int
-    luggage_bags: int
-    fuel_price_rs: float = Field(le=150)
-    booking: str
-    zone: str
+    distance_km: float = Field(
+        ...,
+        ge=0.0,
+        le=200.0,
+        description="Trip distance in kilometers (0 to 200 km)",
+        examples=[5.2]
+    )
+    wait_min: float = Field(
+        ...,
+        ge=0.0,
+        le=300.0,
+        description="Waiting time in minutes (0 to 300 min)",
+        examples=[8.5]
+    )
+    passengers: int = Field(
+        ...,
+        ge=1,
+        le=8,
+        description="Passenger count (1 to 8)",
+        examples=[2]
+    )
+    hour: int = Field(
+        ...,
+        ge=0,
+        le=23,
+        description="Trip hour of day (0 to 23)",
+        examples=[14]
+    )
+    luggage_bags: int = Field(
+        ...,
+        ge=0,
+        le=10,
+        description="Number of luggage bags (0 to 10)",
+        examples=[1]
+    )
+    fuel_price_rs: float = Field(
+        ...,
+        gt=0.0,
+        le=150.0,
+        description="Fuel price in INR per liter/kg (max 150)",
+        examples=[96.5]
+    )
+    booking: BookingChannel = Field(
+        ...,
+        description="Booking method ('street', 'stand', or 'app')",
+        examples=["app"]
+    )
+    zone: AutoZone = Field(
+        ...,
+        description="Operating zone ('Station Area', 'Market', or 'Outskirts')",
+        examples=["Market"]
+    )
 
 
 # Health check
@@ -113,7 +171,7 @@ def health():
 @app.post("/predict")
 def predict_fare(request: FareRequest):
 
-    input_data = pd.DataFrame([request.model_dump()])
+    input_data = pd.DataFrame([request.model_dump(mode="json")])
 
     prediction = model.predict(input_data)[0]
 
